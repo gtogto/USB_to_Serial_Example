@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="custom_colors" >
+        <item>#FF0000</item>
+        <item>#FF8000</item>
+        <item>#BFFF00</item>
+        <item>#00FF0B</item>
+        <item>#00FFBF</item>
+        <item>#0040FF</item>
+        <item>#8000FF</item>
+        <item>#FF00BF</item>
+        <item>#D30094</item>
+    </array>
+
+    <string-array name="baud_rates">
+        <item>2400</item>
+        <item>9600</item>
+        <item>19200</item>
+        <item>57600</item>
+        <item>115200</item>
+    </string-array>
+    <string-array name="newline_names">
+        <item>LF</item>
+        <item>CR+LF</item>
+    </string-array>
+    <string-array name="newline_values">
+        <item>\u000a</item>
+        <item>\u000d\u000a</item>
+    </string-array>
+</resources>
