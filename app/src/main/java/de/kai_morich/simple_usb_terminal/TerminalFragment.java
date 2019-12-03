@@ -46,12 +46,24 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import static com.rtugeek.android.colorseekbar.ColorSeekBar.mAlphaBarPosition;
+import static com.rtugeek.android.colorseekbar.ColorSeekBar.mBarWidth;
+import static com.rtugeek.android.colorseekbar.ColorSeekBar.mCachedColors;
+import static com.rtugeek.android.colorseekbar.ColorSeekBar.mColorBarPosition;
+import static com.rtugeek.android.colorseekbar.ColorSeekBar.mMaxPosition;
+import static com.rtugeek.android.colorseekbar.ColorSeekBar.pick_color_return;
+import static com.rtugeek.android.colorseekbar.ColorSeekBar.realLeft;
+import static com.rtugeek.android.colorseekbar.ColorSeekBar.realRight;
+
 /*
 * By. GTO. 2019.11.27
 * */
 public class TerminalFragment extends Fragment implements ServiceConnection, SerialListener {
 
     private BarChart barChart;
+
+    private ColorSeekBar colorSeekBar;
 
     private enum Connected { False, Pending, True }
 
@@ -61,6 +73,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     private String newline = "\r\n";
 
     private TextView receiveText;
+    private TextView textview;
 
     //TODO : mgc Data format global val
     //TODO ===============================================
@@ -86,6 +99,16 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     public String mgc_sd_c;
 
     public String mgc_tail;
+
+    public float x_percent_formula;
+    public float y_percent_formula;
+    public float z_percent_formula;
+
+    public float color_percent_formula;
+
+    public float color_full;
+    public float color_final;
+    public int x_num;
 
     String color_1 = "#fd4381";
 
@@ -119,8 +142,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         deviceId = getArguments().getInt("device");
         portNum = getArguments().getInt("port");
         baudRate = getArguments().getInt("baud");
-
     }
+
 
     @Override
     public void onDestroy() {
@@ -188,7 +211,6 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     public void onServiceDisconnected(ComponentName name) {
         service = null;
     }
-
     /*
      * UI
      */
@@ -201,16 +223,25 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
         TextView sendText = view.findViewById(R.id.send_text);
         View sendBtn = view.findViewById(R.id.send_btn);
-        TextView textview = view.findViewById(R.id.text_view);
+        textview = view.findViewById(R.id.text_view);
         barChart = view.findViewById(R.id.bargraph);
 
         sendBtn.setOnClickListener(v -> send(sendText.getText().toString()));
-        ColorSeekBar colorSeekBar = view.findViewById(R.id.color_seek_bar);
+        colorSeekBar = view.findViewById(R.id.color_seek_bar);
 
         colorSeekBar.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
+
             @Override
             public void onColorChangeListener(int colorBarPosition, int alphaBarPosition, int color) {
+                x_num = (int) x_percent_formula;
+                //textview.setTextColor(cached_color[x_num]);
                 textview.setTextColor(color);
+
+                System.out.println("x_num and cached color :" + x_num +  " " + cached_color[x_num]);
+                System.out.println("cached color: " + mCachedColors);
+                System.out.println("Bar width: " + mBarWidth);
+                System.out.println("Bar left and right: " + realLeft + " , " + realRight);
+
             }
         });
 
@@ -424,9 +455,12 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         String mgc_X_swap = mgc_X_0[0] + mgc_X_0[1];
         String mgc_Y_swap = mgc_Y_0[0] + mgc_Y_0[1];
         String mgc_Z_swap = mgc_Z_0[0] + mgc_Z_0[1];
-        int mgc_X_int = Integer.parseInt(mgc_X_swap, 16);
-        int mgc_Y_int = Integer.parseInt(mgc_Y_swap, 16);
-        int mgc_Z_int = Integer.parseInt(mgc_Z_swap, 16);
+        float mgc_X_int = Integer.parseInt(mgc_X_swap, 16);
+        x_percent_formula = ((mgc_X_int/65534)*100);
+        float mgc_Y_int = Integer.parseInt(mgc_Y_swap, 16);
+        y_percent_formula = ((mgc_Y_int/65534)*100);
+        float mgc_Z_int = Integer.parseInt(mgc_Z_swap, 16);
+        z_percent_formula = ((mgc_Z_int/65534)*100);
 
         // ===============================================================================================
         String [] mgc_cic_s_2 = new String[2];
@@ -585,7 +619,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         float sd_e_float = Float.intBitsToFloat(sd_e.intValue());
         float sd_c_float = Float.intBitsToFloat(sd_c.intValue());
 
-        receiveText.append("XYZ int :"+ mgc_X_int + " " + mgc_Y_int + " " + mgc_Z_int);
+        receiveText.append("XYZ int :"+ Math.round((x_percent_formula*100/100.0)) + " " + Math.round((y_percent_formula*100/100.0))+
+                " " + Math.round((z_percent_formula*100/100.0)));
         receiveText.append("\n");
 
         receiveText.append("CIC float :"+ (Math.round(cic_s_float*100)/100.0) + " " + (Math.round(cic_w_float*100)/100.0) + " "
@@ -669,8 +704,6 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         disconnect();
     }
 
-
-
     ///////////////////////////////////////////////////////////////////////
     //static parameters
     ///////////////////////////////////////////////////////////////////////
@@ -679,6 +712,21 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     public static final String GEST_FW_VERSION_INFO              = "83";
     public static final String GEST_SENSOR_DATA_OUTPUT           = "91";
     public static final String GEST_SET_RUNTIME_PARAMETER        = "A2";
+
+    public static int [] cached_color = { 65536, -62976, -60416, -57600, -55040, -52480, -49920, -47104, -44544, -41984,
+            -39424, -36608, -34048, -228096, -553216, -878336, -1203200, -1528320, -1853440, -2178560,
+            -2503680, -2894336, -3219200, -3544320, -3869440, -4194560, -5177599, -6226174, -7209213, -8192252,
+            -9175292, -10223867, -11206906, -12189945, -13238520, -14221559, -15204598, -16187637, -16711918, -16711903,
+            -16711889, -16711875, -16711860, -16711846, -16711831, -16711817, -16711803, -16711788, -16711774, -16711759,
+            -16711745, -16715580, -16719671, -16723506, -16727341, -16731175, -16735266, -16739101, -16742936, -16747027,
+            -16750862, -16754697, -16758532, -16433665, -15779585, -15059969, -14405889, -13751809, -13097729, -12378113,
+            -11724033, -11070209, -10416129, -9696513, -9042433, -8388353, -7732998, -7077643, -6422288, -5701397,
+            -5046043, -4390688, -3735333, -3079978, -2424623, -1703732, -1048377, -393022, -196419, -393030,
+            -655178, -851789, -1113936, -1310548, -1572695, -1769307, -2031454, -2228066, -2490213, -2686825,
+            -2948972 };
+
+    //-65536	-62976	-60416	-57600	-55040	-52480	-49920	-47104	-44544	-41984	-39424	-36608	-34048	-228096	-553216	-878336	-1203200	-1528320	-1853440	-2178560	-2503680	-2894336	-3219200	-3544320	-3869440	-4194560	-5177599	-6226174	-7209213	-8192252	-9175292	-10223867	-11206906	-12189945	-13238520	-14221559	-15204598	-16187637	-16711918	-16711903	-16711889	-16711875	-16711860	-16711846	-16711831	-16711817	-16711803	-16711788	-16711774	-16711759	-16711745	-16715580	-16719671	-16723506	-16727341	-16731175	-16735266	-16739101	-16742936	-16747027	-16750862	-16754697	-16758532	-16433665	-15779585	-15059969	-14405889	-13751809	-13097729	-12378113	-11724033	-11070209	-10416129	-9696513	-9042433	-8388353	-7732998	-7077643	-6422288	-5701397	-5046043	-4390688	-3735333	-3079978	-2424623	-1703732	-1048377	-393022	-196419	-393030	-655178	-851789	-1113936	-1310548	-1572695	-1769307	-2031454	-2228066	-2490213	-2686825	-2948972
+
     ///////////////////////////////////////////////////////////////////////
     //static parameters
     ///////////////////////////////////////////////////////////////////////
