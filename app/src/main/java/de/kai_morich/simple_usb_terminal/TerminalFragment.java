@@ -10,11 +10,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -29,6 +32,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,8 +49,12 @@ import com.rtugeek.android.colorseekbar.ColorSeekBar;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.rtugeek.android.colorseekbar.ColorSeekBar.mAlphaBarPosition;
 import static com.rtugeek.android.colorseekbar.ColorSeekBar.mBarWidth;
@@ -110,7 +119,9 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     public float color_final;
     public int x_num;
 
-    String color_1 = "#fd4381";
+    Handler mHandler = null;
+    private TimerTask myTask;
+    private Timer timer;
 
     private SerialSocket socket;
     private SerialService service;
@@ -142,8 +153,43 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         deviceId = getArguments().getInt("device");
         portNum = getArguments().getInt("port");
         baudRate = getArguments().getInt("baud");
-    }
 
+        /*
+        myTask = new TimerTask() {
+            public void run() {
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        getActivity().runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                colorSeekBar.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
+
+                                    @Override
+                                    public void onColorChangeListener(int colorBarPosition, int alphaBarPosition, int color) {
+                                        x_num = (int) x_percent_formula;
+                                        textview.setTextColor(cached_color[x_num]);
+                                        //textview.setTextColor(color);
+
+                                        System.out.println("x_num and cached color :" + x_num +  " " + cached_color[x_num]);
+                                        System.out.println("cached color: " + mCachedColors);
+                                        System.out.println("Bar width: " + mBarWidth);
+                                        System.out.println("Bar left and right: " + realLeft + " , " + realRight);
+
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }).start();
+            }
+        };
+        timer = new Timer();
+        timer.schedule(myTask, 0, 100);*/
+    }
 
     @Override
     public void onDestroy() {
@@ -228,14 +274,14 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
         sendBtn.setOnClickListener(v -> send(sendText.getText().toString()));
         colorSeekBar = view.findViewById(R.id.color_seek_bar);
-
+        /*
         colorSeekBar.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
 
             @Override
             public void onColorChangeListener(int colorBarPosition, int alphaBarPosition, int color) {
                 x_num = (int) x_percent_formula;
-                //textview.setTextColor(cached_color[x_num]);
-                textview.setTextColor(color);
+                textview.setTextColor(cached_color[x_num]);
+                //textview.setTextColor(color);
 
                 System.out.println("x_num and cached color :" + x_num +  " " + cached_color[x_num]);
                 System.out.println("cached color: " + mCachedColors);
@@ -243,7 +289,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                 System.out.println("Bar left and right: " + realLeft + " , " + realRight);
 
             }
-        });
+        });*/
+
 
         return view;
     }
@@ -653,6 +700,15 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         barChart.setTouchEnabled(true);
         barChart.setDragEnabled(true);
         barChart.setScaleEnabled(true);
+
+        colorSeekBar.setColorBarPosition((int)x_percent_formula);
+
+        colorSeekBar.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
+            @Override
+            public void onColorChangeListener(int colorBarPosition, int alphaBarPosition, int color) {
+                textview.setTextColor(color);
+            }
+        });
 
     }
 

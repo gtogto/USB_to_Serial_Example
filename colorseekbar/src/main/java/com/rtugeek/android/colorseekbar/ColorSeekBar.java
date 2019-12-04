@@ -654,7 +654,6 @@ public class ColorSeekBar extends View {
         invalidate();
     }
 
-
     /**
      * Set the value of color bar, if out of bounds , it will be 0 or maxValue;
      *
