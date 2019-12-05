@@ -15,7 +15,9 @@
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/bargraph"
             android:layout_width="373dp"
-            android:layout_height="259dp">
+            android:layout_height="259dp"
+            android:visibility="gone"
+            >
         </com.github.mikephil.charting.charts.BarChart>
 
         <LinearLayout
@@ -29,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:text="Hello GTO!"
                 android:textAlignment="center"
-                android:textSize="50sp"
+                android:textSize="80sp"
                 android:textStyle="bold" />
 
             <com.rtugeek.android.colorseekbar.ColorSeekBar

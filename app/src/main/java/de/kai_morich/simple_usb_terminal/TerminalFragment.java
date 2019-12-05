@@ -113,6 +113,9 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     public float y_percent_formula;
     public float z_percent_formula;
 
+    public int x_value_before;
+    public int x_value_after;
+
     public float color_percent_formula;
 
     public float color_full;
@@ -677,7 +680,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         receiveText.append("SD float :"+ (Math.round(sd_s_float*100)/100.0) + " " + (Math.round(sd_w_float*100)/100.0) + " "
                 + (Math.round(sd_n_float*100)/100.0) + " " + (Math.round(sd_e_float*100)/100.0) + " " + (Math.round(sd_w_float*100)/100.0));
         receiveText.append("\n");
-
+        /*
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         barEntries.add(new BarEntry(sd_s_float, 0));
         barEntries.add(new BarEntry(sd_w_float, 1));
@@ -699,16 +702,18 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
         barChart.setTouchEnabled(true);
         barChart.setDragEnabled(true);
-        barChart.setScaleEnabled(true);
+        barChart.setScaleEnabled(true);*/
 
         colorSeekBar.setColorBarPosition((int)x_percent_formula);
-
+        /*
         colorSeekBar.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
             @Override
             public void onColorChangeListener(int colorBarPosition, int alphaBarPosition, int color) {
                 textview.setTextColor(color);
             }
-        });
+        });*/
+
+        axis_list ();
 
     }
 
@@ -717,6 +722,17 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         temp = a[0];
         a[0] = a[1];
         a[1] = temp;
+    }
+
+    public void axis_list () {
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                x_value_before = (int)x_percent_formula;
+            }
+        }, 2000);
+
     }
 
     private void status(String str) {
