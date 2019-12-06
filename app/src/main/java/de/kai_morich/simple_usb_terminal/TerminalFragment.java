@@ -116,6 +116,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     public int x_value_before;
     public int x_value_after;
 
+    public int x_gap;
+
     public float color_percent_formula;
 
     public float color_full;
@@ -704,16 +706,37 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         barChart.setDragEnabled(true);
         barChart.setScaleEnabled(true);*/
 
-        colorSeekBar.setColorBarPosition((int)x_percent_formula);
-        /*
+        if ((int)x_percent_formula != 0) {
+            colorSeekBar.setColorBarPosition((int)x_percent_formula); // moving color bar position
+        }
+        else {
+            colorSeekBar.setColorBarPosition(x_value_before); // moving color bar position
+        }
+
+
+        x_gap = (int)x_percent_formula - x_value_before;
+
+        if (x_gap < 20) {
+            colorSeekBar.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
+                @Override
+                public void onColorChangeListener(int colorBarPosition, int alphaBarPosition, int color) {
+                    textview.setTextColor(color);   // this function is change to color values
+                }
+            });
+        }
+
+        //colorSeekBar.setColorBarPosition((int)x_percent_formula);
         colorSeekBar.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
             @Override
             public void onColorChangeListener(int colorBarPosition, int alphaBarPosition, int color) {
-                textview.setTextColor(color);
+                textview.setTextColor(color);   // this function is change to color values
             }
-        });*/
+        });
 
-        axis_list ();
+        receiveText.append(" " + (int)x_percent_formula + " " + x_value_before);
+        receiveText.append("\n");
+
+        axis_list();
 
     }
 
@@ -731,7 +754,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             public void run() {
                 x_value_before = (int)x_percent_formula;
             }
-        }, 2000);
+        }, 5000);
 
     }
 
