@@ -116,6 +116,12 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     public int x_value_before;
     public int x_value_after;
 
+    public int mgc_touch_int;
+    public int mgc_gesture_int;
+
+    public int colorWheel_BarPosition;
+    public int colorWheel_AlphaPosition;
+
     public int x_gap;
 
     public float color_percent_formula;
@@ -670,9 +676,9 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         float sd_n_float = Float.intBitsToFloat(sd_n.intValue());
         float sd_e_float = Float.intBitsToFloat(sd_e.intValue());
         float sd_c_float = Float.intBitsToFloat(sd_c.intValue());
-
+        /*
         receiveText.append("XYZ int :"+ Math.round((x_percent_formula*100/100.0)) + " " + Math.round((y_percent_formula*100/100.0))+
-                " " + Math.round((z_percent_formula*100/100.0)));
+                " " + Math.round((z_percent_formula*100/100.0)) + " touch: " + mgc_touch + " gesture: " + mgc_gesture);
         receiveText.append("\n");
 
         receiveText.append("CIC float :"+ (Math.round(cic_s_float*100)/100.0) + " " + (Math.round(cic_w_float*100)/100.0) + " "
@@ -680,8 +686,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         receiveText.append("\n");
 
         receiveText.append("SD float :"+ (Math.round(sd_s_float*100)/100.0) + " " + (Math.round(sd_w_float*100)/100.0) + " "
-                + (Math.round(sd_n_float*100)/100.0) + " " + (Math.round(sd_e_float*100)/100.0) + " " + (Math.round(sd_w_float*100)/100.0));
-        receiveText.append("\n");
+                + (Math.round(sd_n_float*100)/100.0) + " " + (Math.round(sd_e_float*100)/100.0) + " " + (Math.round(sd_c_float*100)/100.0));
+        receiveText.append("\n");*/
         /*
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         barEntries.add(new BarEntry(sd_s_float, 0));
@@ -706,24 +712,31 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         barChart.setDragEnabled(true);
         barChart.setScaleEnabled(true);*/
 
-        if ((int)x_percent_formula != 0) {
-            colorSeekBar.setColorBarPosition((int)x_percent_formula); // moving color bar position
+        mgc_gesture_int = Integer.parseInt( mgc_gesture, 16 );
+
+        if (connected == Connected.False) {
+            colorWheel_BarPosition = 0;
         }
         else {
-            colorSeekBar.setColorBarPosition(x_value_before); // moving color bar position
+            if ((int)x_percent_formula > 94) {                                          // right Thumb
+                colorWheel_BarPosition = colorWheel_BarPosition + 1;
+            }
+
+            else if ((int)x_percent_formula > 1 && (int)x_percent_formula < 11) {   // Left Thumb
+                colorWheel_BarPosition = colorWheel_BarPosition - 1;
+            }
+
+            else if (mgc_gesture_int == 82) {
+                colorWheel_BarPosition = colorWheel_BarPosition + 2;
+            }
+
+            else if (mgc_gesture_int == 76) {
+                colorWheel_BarPosition = colorWheel_BarPosition - 2;
+            }
         }
 
-
-        x_gap = (int)x_percent_formula - x_value_before;
-
-        if (x_gap < 20) {
-            colorSeekBar.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
-                @Override
-                public void onColorChangeListener(int colorBarPosition, int alphaBarPosition, int color) {
-                    textview.setTextColor(color);   // this function is change to color values
-                }
-            });
-        }
+        colorSeekBar.setColorBarPosition(colorWheel_BarPosition);
+        //colorSeekBar.setAlphaBarPosition(colorWheel_AlphaPosition);
 
         //colorSeekBar.setColorBarPosition((int)x_percent_formula);
         colorSeekBar.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
@@ -732,12 +745,12 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                 textview.setTextColor(color);   // this function is change to color values
             }
         });
-
+        /*
         receiveText.append(" " + (int)x_percent_formula + " " + x_value_before);
         receiveText.append("\n");
 
         axis_list();
-
+        */
     }
 
     public static void swap(String [] a){
@@ -754,7 +767,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             public void run() {
                 x_value_before = (int)x_percent_formula;
             }
-        }, 5000);
+        }, 5000);   // sleep 5 seconds
 
     }
 
