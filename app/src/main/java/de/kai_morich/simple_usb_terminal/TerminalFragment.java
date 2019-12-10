@@ -676,7 +676,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         float sd_n_float = Float.intBitsToFloat(sd_n.intValue());
         float sd_e_float = Float.intBitsToFloat(sd_e.intValue());
         float sd_c_float = Float.intBitsToFloat(sd_c.intValue());
-        /*
+
         receiveText.append("XYZ int :"+ Math.round((x_percent_formula*100/100.0)) + " " + Math.round((y_percent_formula*100/100.0))+
                 " " + Math.round((z_percent_formula*100/100.0)) + " touch: " + mgc_touch + " gesture: " + mgc_gesture);
         receiveText.append("\n");
@@ -687,7 +687,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
         receiveText.append("SD float :"+ (Math.round(sd_s_float*100)/100.0) + " " + (Math.round(sd_w_float*100)/100.0) + " "
                 + (Math.round(sd_n_float*100)/100.0) + " " + (Math.round(sd_e_float*100)/100.0) + " " + (Math.round(sd_c_float*100)/100.0));
-        receiveText.append("\n");*/
+        receiveText.append("\n");
         /*
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         barEntries.add(new BarEntry(sd_s_float, 0));
@@ -718,11 +718,19 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             colorWheel_BarPosition = 0;
         }
         else {
-            if ((int)x_percent_formula > 94) {                                          // right Thumb
+            if ((int)x_percent_formula > 90) {                                          // right Thumb
                 colorWheel_BarPosition = colorWheel_BarPosition + 1;
             }
 
-            else if ((int)x_percent_formula > 1 && (int)x_percent_formula < 11) {   // Left Thumb
+            else if ((int)x_percent_formula > 1 && (int)x_percent_formula < 20) {   // Left Thumb
+                colorWheel_BarPosition = colorWheel_BarPosition - 1;
+            }
+
+            else if ((int)y_percent_formula > 0 && (int)x_percent_formula == 0) {   // Left Thumb
+                colorWheel_BarPosition = colorWheel_BarPosition - 1;
+            }
+
+            else if ((int)z_percent_formula > 0 && (int)x_percent_formula == 0) {   // Left Thumb
                 colorWheel_BarPosition = colorWheel_BarPosition - 1;
             }
 
