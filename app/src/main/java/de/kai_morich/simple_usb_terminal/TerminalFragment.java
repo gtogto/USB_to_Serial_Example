@@ -83,6 +83,12 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
     private TextView receiveText;
     private TextView textview;
+    private ImageView ambient_front;
+    private ImageView ambient_front_2;
+    private ImageView ambient_front_3;
+    private ImageView ambient_back_1;
+    private ImageView ambient_back_2;
+    private ImageView ambient_front_3_bottom;
 
     //TODO : mgc Data format global val
     //TODO ===============================================
@@ -280,8 +286,20 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
         TextView sendText = view.findViewById(R.id.send_text);
         View sendBtn = view.findViewById(R.id.send_btn);
-        textview = view.findViewById(R.id.text_view);
+        //textview = view.findViewById(R.id.text_view);
         barChart = view.findViewById(R.id.bargraph);
+        ambient_front = view.findViewById(R.id.red_cir);
+        ambient_front_2 = view.findViewById(R.id.red_cir_2);
+        //ambient_front_3 = view.findViewById(R.id.red_cir_4);
+        ambient_back_1 = view.findViewById(R.id.red_cir_3);
+        //ambient_back_2 = view.findViewById(R.id.red_cir_5);
+        ambient_front_3_bottom = view.findViewById(R.id.red_cir_6);
+        ambient_front.setImageAlpha(90);
+        ambient_front_2.setImageAlpha(90);
+        //ambient_front_3.setImageAlpha(90);
+        ambient_back_1.setImageAlpha(90);
+        //ambient_back_2.setImageAlpha(90);
+        ambient_front_3_bottom.setImageAlpha(90);
 
         sendBtn.setOnClickListener(v -> send(sendText.getText().toString()));
         colorSeekBar = view.findViewById(R.id.color_seek_bar);
@@ -750,7 +768,13 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         colorSeekBar.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
             @Override
             public void onColorChangeListener(int colorBarPosition, int alphaBarPosition, int color) {
-                textview.setTextColor(color);   // this function is change to color values
+                ambient_front.setColorFilter(color);
+                ambient_front_2.setColorFilter(color);
+                //ambient_front_3.setColorFilter(color);
+                ambient_back_1.setColorFilter(color);
+                //ambient_back_2.setColorFilter(color);
+                ambient_front_3_bottom.setColorFilter(color);
+                //textview.setTextColor(color);   // this function is change to color values
             }
         });
         /*
