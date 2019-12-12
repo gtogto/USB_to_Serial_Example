@@ -34,7 +34,7 @@ public class ColorSeekBar extends View {
     private boolean mMovingAlphaBar;
     private Bitmap mTransparentBitmap;
     private RectF mColorRect;
-    private int mThumbHeight = 20;
+    private int mThumbHeight = 60;
     private float mThumbRadius;
     private int mBarHeight = 2;
     private Paint mColorRectPaint;
@@ -142,7 +142,7 @@ public class ColorSeekBar extends View {
         int backgroundColor = a.getColor(R.styleable.ColorSeekBar_bgColor, Color.TRANSPARENT);
         mBarHeight = (int) a.getDimension(R.styleable.ColorSeekBar_barHeight, (float) dp2px(2));
         mBarRadius = (int) a.getDimension(R.styleable.ColorSeekBar_barRadius, 0);
-        mThumbHeight = (int) a.getDimension(R.styleable.ColorSeekBar_thumbHeight, (float) dp2px(30));
+        mThumbHeight = (int) a.getDimension(R.styleable.ColorSeekBar_thumbHeight, (float) dp2px(60));
         mBarMargin = (int) a.getDimension(R.styleable.ColorSeekBar_barMargin, (float) dp2px(5));
         a.recycle();
 

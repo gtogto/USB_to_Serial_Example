@@ -89,6 +89,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     private ImageView ambient_back_1;
     private ImageView ambient_back_2;
     private ImageView ambient_front_3_bottom;
+    private Button btn1;
 
     //TODO : mgc Data format global val
     //TODO ===============================================
@@ -284,6 +285,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         receiveText.setTextColor(getResources().getColor(R.color.colorRecieveText)); // set as default color to reduce number of spans
         receiveText.setMovementMethod(ScrollingMovementMethod.getInstance());
 
+        btn1 = view.findViewById(R.id.ambient_menu_1);
         TextView sendText = view.findViewById(R.id.send_text);
         View sendBtn = view.findViewById(R.id.send_btn);
         //textview = view.findViewById(R.id.text_view);
@@ -762,7 +764,6 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         }
 
         colorSeekBar.setColorBarPosition(colorWheel_BarPosition);
-        //colorSeekBar.setAlphaBarPosition(colorWheel_AlphaPosition);
 
         //colorSeekBar.setColorBarPosition((int)x_percent_formula);
         colorSeekBar.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
@@ -777,12 +778,12 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                 //textview.setTextColor(color);   // this function is change to color values
             }
         });
+
         /*
         receiveText.append(" " + (int)x_percent_formula + " " + x_value_before);
         receiveText.append("\n");
-
-        axis_list();
         */
+
     }
 
     public static void swap(String [] a){
@@ -792,15 +793,17 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         a[1] = temp;
     }
 
-    public void axis_list () {
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                x_value_before = (int)x_percent_formula;
-            }
-        }, 5000);   // sleep 5 seconds
+    public void buffer_clear() {
 
+        if (connected == Connected.True) {
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    receiveText.setText("");
+                }
+            }, 5000);   // Empty the buffer every 5 seconds
+        }
     }
 
     private void status(String str) {
