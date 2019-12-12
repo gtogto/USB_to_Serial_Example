@@ -26,10 +26,13 @@ usb to serial communication Example for android
 
 ## Demo
 - version 1.0 -Background color change by 4 actions
+
 ![image](https://user-images.githubusercontent.com/30851459/69128306-5489cd00-0aef-11ea-8a91-c50bfec73c86.gif)
 
 - version 1.1 -Color change by x axis (100 colors)
+
 ![image](https://user-images.githubusercontent.com/30851459/70115609-9bf18b00-16a3-11ea-85ae-48ee56673bdf.gif)
 
 - version 1.2 -Color change & UI (64 bit color)
-![image]![ColorWheel_7frame-resize](https://user-images.githubusercontent.com/30851459/70687789-77289380-1cf3-11ea-8e45-ae5a84bcb7b8.gif)
+
+![image](https://user-images.githubusercontent.com/30851459/70687789-77289380-1cf3-11ea-8e45-ae5a84bcb7b8.gif)
